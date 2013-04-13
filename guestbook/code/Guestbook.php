@@ -101,7 +101,7 @@ class Guestbook extends Page
 	/**
 	 * retrieve the entries for current category
 	 * @param void
-	 * @return object Fieldset
+	 * @return object FieldList
 	 */
 	public function getCMSFields()
 	{
@@ -255,25 +255,12 @@ class Guestbook extends Page
 			$arrTabFields[]	= $ReCaptchaLangField;
 		}
 
-		$fields->addFieldsToTab( 'Root.Content.' . _t( 'Guestbook.TABNAMECONFIG', 'Config' ), $arrTabFields );
+		$fields->addFieldsToTab( 'Root.' . _t( 'Guestbook.TABNAMECONFIG', 'Config' ), $arrTabFields );
 
-		$entriesTable = new DataObjectManager(
- 			$this,				// controller object
- 			'GuestbookEntries',	// fieldname
- 			'GuestbookEntry',	// dataObject class
-			array(				// fields for overview
-				'FirstName'	=> _t( 'GuestbookEntry.FIRSTNAME', 'First Name' ),
-				'LastName'	=> _t( 'GuestbookEntry.LASTNAME', 'Last Name' ),
-				'Email'		=> _t( 'GuestbookEntry.EMAIL', 'Email' ),
-				'Title'		=> _t( 'GuestbookEntry.TITLE', 'Title' ),
-				'Comment'	=> _t( 'GuestbookEntry.COMMENT', 'Comment' ),
-				'IsSpam'	=> _t( 'GuestbookEntry.ISSPAM', 'Is Spam?' ),
-				'IsActive'	=> _t( 'GuestbookEntry.ISACTIVE', 'Is activated?' ),
-			),
-			'getCMSFields'		// fields for popup
-		);
 
-		$fields->addFieldsToTab( 'Root.Content.' . _t( 'Guestbook.TABNAME', 'Entries' ), array( $entriesTable ) );
+		$gridFieldConfig =$gridFieldConfig = GridFieldConfig_RecordEditor::create();
+		$gridfield = new GridField("GuestbookEntries", "GuestbookEntry", $this->GuestbookEntries(), $gridFieldConfig);			
+  		$fields->addFieldsToTab( 'Root.' . _t( 'Guestbook.TABNAME', 'Entries' ), $gridfield );
 
 		return $fields;
 	}
@@ -507,17 +494,17 @@ class Guestbook_Controller extends Page_Controller implements PermissionProvider
 				$fields->removeByName( 'Url' );
 			}
 
-			if( MathSpamProtection::isEnabled()
-				&& 'mathspam' == $this->SpamProtection )
-			{
-				$fields->push( new TextField( 'Math',
-						sprintf( _t( 'Guestbook.SPAMQUESTION', "Spam protection question: %s" ), MathSpamProtection::getMathQuestion() )
-					)
-				);
-			}
+//not work in ss3 			if( MathSpamProtection::isEnabled()
+//not work in ss3 				&& 'mathspam' == $this->SpamProtection )
+//not work in ss3 			{
+//not work in ss3 				$fields->push( new TextField( 'Math',
+//not work in ss3 						sprintf( _t( 'Guestbook.SPAMQUESTION', "Spam protection question: %s" ), MathSpamProtection::getMathQuestion() )
+//not work in ss3 					)
+//not work in ss3 				);
+//not work in ss3 			}
 		}
 
-		$actions = new FieldSet(
+		$actions = new FieldList(
 			new FormAction( 'doSubmitEntry', _t( 'Guestbook.ENTER', 'Enter' ) )
 		);
 		$validator = new RequiredFields(
@@ -556,7 +543,7 @@ class Guestbook_Controller extends Page_Controller implements PermissionProvider
 	{
 		$fields = singleton( 'GuestbookEntryComment' )->getCMSFields();
 
-		$actions = new FieldSet(
+		$actions = new FieldList(
 			new FormAction( 'doSubmitComment', _t( 'Guestbook.ENTER', 'Enter' ) )
 		);
 		$validator = new RequiredFields(
@@ -637,7 +624,7 @@ class Guestbook_Controller extends Page_Controller implements PermissionProvider
 			);
 		}
 
-		Director::redirectBack();
+        $this->redirectBack();
 		return;
 	}
 
@@ -677,7 +664,7 @@ class Guestbook_Controller extends Page_Controller implements PermissionProvider
 					'good'
 				);
 
-				Director::redirectBack();
+                $this->redirectBack();
 			}
 		}
 
@@ -763,16 +750,17 @@ class Guestbook_Controller extends Page_Controller implements PermissionProvider
 				break;
 			case 'showSmilies':
 				// rearrange smilies array for template
+                $arrSmilies=new ArrayList();
 				foreach( Guestbook::getEmoticons()  as $strKey => $strValue )
 				{
-					$arrSmilies[] = array(
+					$arrSmilies->add( array(
 						'Img'	=> $strValue,
 						'Code'	=> $strKey,
-					);
+					));
 				}
 
 				$retVal = $this->customise( array(
-					'smiliesMap' => new DataObjectSet( $arrSmilies ),
+					'smiliesMap' =>  $arrSmilies ,
 				) )->renderWith( 'Guestbook_showSmilies' );
 				break;
 			case 'spam':
@@ -868,7 +856,7 @@ class Guestbook_Controller extends Page_Controller implements PermissionProvider
 		$retVal = false;
 		if( preg_match( "/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $strEmail ) )
 		{
-			list( $username, $strDomain ) = split( '@' , $strEmail );
+			list( $username, $strDomain ) = explode( '@' , $strEmail );
 
 			if( checkdnsrr( $strDomain,'MX' ) )
 			{

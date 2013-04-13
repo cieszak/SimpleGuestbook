@@ -102,11 +102,11 @@ class GuestbookEntry extends DataObject
 	/**
 	 * definition of form fields for guestbook entries
 	 * @param void
-	 * @return object FieldSet
+	 * @return object FieldList
 	 */
 	public function getCMSFields()
 	{
-		$fields = new FieldSet(
+		$fields = new FieldList(
 			new TextField( 'FirstName', _t( 'GuestbookEntry.FIRSTNAME', 'First Name' ) ),
 			new TextField( 'LastName', _t( 'GuestbookEntry.LASTNAME', 'Last Name' ) ),
 			new EmailField( 'Email', _t( 'GuestbookEntry.EMAIL', 'Email' ) ),
@@ -127,7 +127,7 @@ class GuestbookEntry extends DataObject
 	public function onBeforeWrite()
 	{
 
-		$currentMember = Member::currentMember();
+		$currentMember = Member::currentUser();
 		if( true == $currentMember )
 		{
 			$this->AuthorID = $currentMember->ID;
@@ -162,8 +162,9 @@ class GuestbookEntry extends DataObject
 			$strTo		= $this->Guestbook()->ReceiverMailAddress;
 			$strSubject	= _t( 'GuestbookEntry.MAILSUBJECT', 'New guestbook entry :-)' );
 			$strBody	= sprintf( _t(	'GuestbookEntry.MAILBODY',
-				'You received a new guestbook entry on %s!' ),
-				Director::absoluteBaseURL() );
+				'You received a new guestbook entry on {url}!',
+                                array('url' => Director::absoluteBaseURL())
+				 ));
 			$strBody	.= "\n";
 			$strBody	.= sprintf( _t( 'GuestbookEntry.MAILBODYNAME',
 				'Name: %s %s' ), $this->getField( 'FirstName' ),
@@ -192,7 +193,7 @@ class GuestbookEntry extends DataObject
 	{
 		if( is_array( $arrParam ) )
 		{
-			$retVal = array();
+			$retVal = new DataList('GuestbookEntry');
 
 			$limit = 0;
 			if( true == array_key_exists( 'limit_start', $arrParam )
@@ -202,10 +203,10 @@ class GuestbookEntry extends DataObject
 			}
 
 			$sqlQuery = new SQLQuery();
-			$sqlQuery->select = array( '*' );
-			$sqlQuery->from = array( 'GuestbookEntry' );
+			$sqlQuery->setSelect( '*' );
+			$sqlQuery->setFrom('GuestbookEntry' );
 			$sqlQuery->where = array( $arrParam[ 'filter' ] );
-			$sqlQuery->orderby = $arrParam[ 'sort' ];
+			//$sqlQuery->setOrderBy('sort' );
 
 			/**
 			 * get all entries, add comments if available & enabled,
@@ -256,41 +257,39 @@ class GuestbookEntry extends DataObject
 					$entry[ 'Comment' ] = Guestbook::getReplaceEmoticons( $entry[ 'Comment' ] );
 				}
 
-				$retVal[] = $entry;
+				$retVal->add($entry);
 			}
-
-			$objDataObjectSet = $this->buildDataObjectSet( $retVal );
 
 			if( true == array_key_exists( 'limit_end', $arrParam )
 				&& is_numeric( $arrParam[ 'limit_end' ] )
-				&& is_object( $objDataObjectSet )
+				&& is_object( $retVal )
 				)
 			{
 				/**
 				 * reverse-engineered pagination behaviour
 				 */
-				$intCount = $objDataObjectSet->TotalItems();
+				$intCount = $retVal->count();
 
-				$objDataObjectSet->setPageLimits(
-						$arrParam[ 'limit_start' ],
-						$arrParam[ 'limit_end' ],
-						$intCount
-				);
+//not work in ss3 				$objDataObjectSet->setPageLimits(
+//not work in ss3 						$arrParam[ 'limit_start' ],
+//not work in ss3 						$arrParam[ 'limit_end' ],
+//not work in ss3 						$intCount
+//not work in ss3 				);
 
-				$objSet = $objDataObjectSet->getRange(
+				$objSet = $retVal->getRange(
 						$arrParam[ 'limit_start' ],
 						$arrParam[ 'limit_end' ]
 				);
 
-				$objSet->setPageLimits(
-						$arrParam[ 'limit_start' ],
-						$arrParam[ 'limit_end' ],
-						$intCount
-				);
+//not work in ss3 				$objSet->setPageLimits(
+//not work in ss3 						$arrParam[ 'limit_start' ],
+//not work in ss3 						$arrParam[ 'limit_end' ],
+//not work in ss3 						$intCount
+//not work in ss3 				);
 			}
 			else
 			{
-				$objSet = &$objDataObjectSet;
+				$objSet = &$retVal;
 			}
 
 			return $objSet;

@@ -11,7 +11,7 @@
  */
 //SpamProtectorManager::set_spam_protector("RecaptchaProtector");
 //SpamProtectorManager::set_spam_protector("SimplestSpamProtector");
-SpamProtectorManager::set_spam_protector("PHPCaptchaProtector");
+//not work in ss3 SpamProtectorManager::set_spam_protector("PHPCaptchaProtector");
 
 /**
  * enable translations
@@ -21,7 +21,7 @@ i18n::set_locale('en_US');
 /**
  * enable spam Protection
  */
-MathSpamProtection::setEnabled();
+//not work in ss3 MathSpamProtection::setEnabled();
 
 Guestbook::setEmoticons( array(
 	':-)'		=> 'smile',

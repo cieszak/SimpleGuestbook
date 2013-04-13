@@ -53,11 +53,11 @@ class GuestbookEntryComment extends DataObject
 	/**
 	 * definition of form fields
 	 *
-	 * @return obj FieldSet
+	 * @return obj FieldList
 	 */
 	public function getCMSFields()
 	{
-		$fields = new FieldSet(
+		$fields = new FieldList(
 			new TextField( 'Title', _t( 'GuestbookEntry.TITLE', 'Title' ) ),
 			new TextareaField( 'Comment', _t( 'GuestbookEntry.COMMENT', 'Comment' ) ),
 #			new HiddenField( 'EntryID', '', Director::urlParam( 'ID' ) )
@@ -95,28 +95,29 @@ class GuestbookEntryComment extends DataObject
 		if( is_numeric( $intEntryID ) )
 		{
 			$sqlQuery = new SQLQuery();
-			$sqlQuery->select = array(
+			$sqlQuery->setSelect(
 					'GC.ID',
 					'GC.Created',
 					'GC.Title',
 					'GC.Comment',
 					'M.FirstName',
 					'M.Surname',
-					'M.Email',
-					'GC.ClassName AS ClassName',
-					'GC.ClassName AS RecordClassName',
+					'M.Email'
 				);
-			$sqlQuery->from = array(
+            $sqlQuery->selectField('GC.ClassName','ClassName');
+            $sqlQuery->selectField('GC.ClassName','RecordClassName');
+                        	
+			$sqlQuery->setFrom( array(
 					'GuestbookEntryComment GC',
 					'LEFT JOIN ( Member M )',
 					'ON ( M.ID = GC.AuthorID )',
-				);
+				));
 			$sqlQuery->where = array(
 					'GC.GuestbookEntryID = ' . (int)$intEntryID,
 				);
-			$sqlQuery->orderby( $orderBy );
-
-			return $this->buildDataObjectSet( $sqlQuery->execute() );
+			$sqlQuery->setOrderBy( $orderBy );
+                        
+			return new ArrayList($sqlQuery->execute());
 		}
 	}
 

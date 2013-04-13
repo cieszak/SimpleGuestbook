@@ -1,0 +1,59 @@
+pl:
+  Guestbook:
+    COMMENTADDED: Komentarz dodany!
+    ENCRYPTMAIL: Zaszyfruj adresu e-mail (wymaga javascript)
+    ENTER: Zapisz
+    ENTRYADDED: Wpis zapisany poprawnie!
+    ENTRYCOMMENTS: Zezwól na komentarze do wpisów
+    NEEDSACTIVATION: Nowe wpisy wymagają aktywacji
+    PAGNATIONLIMIT: Wpisów na stronę
+    RECAPTCHALANG: ReCaptcha język (only works if i18n is not set!)
+    RECAPTCHASTYLE: ReCaptcha Style
+    SENDERMAILADDRESS: Adres e-mail nadawcy powiadomień o wpisach (zostaw puste jeśli nie używać)
+    RECEIVERMAILADDRESS: Adres e-mail na który mają być wysyłane powiadomienia o nowych wpisach (zostaw puste jeśli nie wysyłać powiadomień)
+    SHOWEMAIL: Pokaż pole "email" w formularzu księgi gości
+    SHOWHOMEPAGE: Pokaż pole "strona www" w formularzu księgi gości
+    SHOWLASTNAME: Pokaż pole "nazwisko" w formularzu księgi gości
+    SHOWLASTNAMEINENTRIES: Pokaż "nazwisko" we wpisach
+    SHOWPAGINATION: Pokaż stronicowanie dla wpisów
+    SPAMPROTECTION: Które zabezpieczenie przed spamem?
+    PLURALNAME: Księgi gości
+    SINGULARNAME: Ksiega gości
+    SPAMQUESTION: 'Pytanie weryfikujące: {question}'
+    TABNAME: Wpisy
+    TABNAMECONFIG: Konfiguracja
+    CaptchaMessage: Captcha
+  Guestbook.ss:
+    COMMENTSTITLE: 'komentarzy:'
+    DELCOMMENT: usuń komentarz
+    DELENTRY: usuń wpis
+    ENTRYISSPAM: wpis jest spamem
+    FROM: od
+    HOMEPAGE: strona www
+    NEWCOMMENT: dodaj komentarz
+    NEXT: następne
+    NEXTPAGE: zobacz następna stronę
+    NOENTRIESYET: brak wpisów
+    PREVIOUS: poprzednie
+    PREVIOUSPAGE: zobacz poprzednia stronę
+    VIEWPAGENO: zobacz stronę numer
+    SHOWSMILIESCODE: emotikony
+  GuestbookEntry:
+    COMMENT: Komentarz
+    EMAIL: Email
+    FIRSTNAME: Imię
+    ISACTIVE: Aktywny?
+    ISSPAM: Spam?
+    LASTNAME: Nazwisko
+    LINKTEXT: Wpis
+    MAILSUBJECT: Nowy wpis w księdze gości :-)
+    MAILBODY: Właśnie ktoś dodał nowy wpis w ksiedze gości {url}!
+    PLURALNAME: Wpisy
+    SINGULARNAME: Wpis
+    TITLE: Tytuł
+    URL: Strona www
+  Comment:
+    PLURALNAME: Komentarze do wpisu ksiegi gości
+    SINGULARNAME: Komentarz do wpisu ksiegi gości
+  Guestbook_addComment.ss:
+    NOTLOGGEDIN: Nie jesteś zalogowany/a!

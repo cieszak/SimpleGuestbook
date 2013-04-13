@@ -46,3 +46,6 @@ maintenance release
 - added PHPCaptcha
 - added URL fixes
 - added configurable smilies
+
+1.2 beta
+- modified for SilverStripe 3
