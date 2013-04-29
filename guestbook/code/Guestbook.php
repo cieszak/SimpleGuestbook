@@ -493,15 +493,6 @@ class Guestbook_Controller extends Page_Controller implements PermissionProvider
 			{
 				$fields->removeByName( 'Url' );
 			}
-
-//not work in ss3 			if( MathSpamProtection::isEnabled()
-//not work in ss3 				&& 'mathspam' == $this->SpamProtection )
-//not work in ss3 			{
-//not work in ss3 				$fields->push( new TextField( 'Math',
-//not work in ss3 						sprintf( _t( 'Guestbook.SPAMQUESTION', "Spam protection question: %s" ), MathSpamProtection::getMathQuestion() )
-//not work in ss3 					)
-//not work in ss3 				);
-//not work in ss3 			}
 		}
 
 		$actions = new FieldList(
@@ -520,12 +511,11 @@ class Guestbook_Controller extends Page_Controller implements PermissionProvider
 		);
 
 		// add spamprotection if enabled
-		if( ( 'recaptcha' == $this->SpamProtection
-				&& 'RecaptchaProtector' == SpamProtectorManager::get_spam_protector() )
-			|| ( 'simplestspam' == $this->SpamProtection
-				&& 'SimplestSpamProtector' == SpamProtectorManager::get_spam_protector() )
-			||('phpcaptcha' == $this->SpamProtection
-			    && 'PhpCaptchaProtector' == SpamProtectorManager::get_spam_protector() )
+        if(
+                ( 'recaptcha' == $this->SpamProtection && 'RecaptchaProtector' == SpamProtectorManager::get_spam_protector() ) ||
+                ( 'simplestspam' == $this->SpamProtection && 'SimplestSpamProtector' == SpamProtectorManager::get_spam_protector() ) || 
+                ( 'phpcaptcha' == $this->SpamProtection && 'PhpCaptchaProtector' == SpamProtectorManager::get_spam_protector() ) ||
+                ( 'mathspam' == $this->SpamProtection && 'MathSpamProtector' == SpamProtectorManager::get_spam_protector() )
 			)
 		{
 			SpamProtectorManager::update_form( $form, 'Captcha', array(), _t('Guestbook.CaptchaMessage', 'Captcha') );
@@ -810,6 +800,7 @@ class Guestbook_Controller extends Page_Controller implements PermissionProvider
 			if( 'en_US' != i18n::get_locale() )
 			{
 				$arrLang = array(
+                    'pl',
 					'en',
 					'nl',
 					'fr',
@@ -997,4 +988,3 @@ class Guestbook_Controller extends Page_Controller implements PermissionProvider
 	}
 
 }
-?>
